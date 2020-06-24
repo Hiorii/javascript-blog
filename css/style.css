@@ -107,33 +107,4 @@ body {
 .post-tags p {
   margin: 0 10px 0 0;
 }
-
-a[class^='tag-size-'] {
-  text-decoration: none;
-}
-.tag-size-1 {
-  color: #3333ff;
-  font-size: 16px;
-  font-weight: 100;    
-}
-.tag-size-2 {
-  color: #0000ff;
-  font-size: 24px;
-  font-weight: 200;    
-}
-.tag-size-3 {
-  color: #0000cc;
-  font-size: 28px;
-  font-weight: 300;    
-}
-.tag-size-4 {
-  color: #000099;
-  font-size: 32px;
-  font-weight: 450;    
-}
-.tag-size-5 {
-  color: #000066;
-  font-size: 36px;
-  font-weight: 580;    
-}
 /*# sourceMappingURL=style.css.map */
