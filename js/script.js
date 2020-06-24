@@ -2,6 +2,14 @@
 /* eslint-disable no-unused-vars */
 'use strict';
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  tagLink: Handlebars.compile(document.querySelector('#template-tag-link').innerHTML),
+  authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
+  tagCloud: Handlebars.compile(document.querySelector('#template-tag-cloud').innerHTML),
+  authorCloud: Handlebars.compile(document.querySelector('#template-author-cloud').innerHTML)
+};
+
 const optArticleSelector = '.post',
   optTitleSelector = '.post-title',
   optTitleListSelector = '.titles',
@@ -25,7 +33,7 @@ const titleClickHandler = function(event){
   const hrefClickedLinked = clickedElement.getAttribute('href');  
   const correctArticles = document.querySelector(hrefClickedLinked);
   correctArticles.classList.add('active');    
-}  
+};  
   
 function generateTitleLinks(customSelector = ''){
   const titleList = document.querySelector(optTitleListSelector);
@@ -35,7 +43,8 @@ function generateTitleLinks(customSelector = ''){
   for(let article of articles){    
     const articleId = article.getAttribute('id');
     const articleTitle = article.querySelector(optTitleSelector).innerHTML;
-    const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';    
+    const linkHTMLData = {id: articleId, title: articleTitle};
+    const linkHTML = templates.articleLink(linkHTMLData);    
     html = html + linkHTML;    
   }
   titleList.innerHTML = html;    
@@ -69,7 +78,8 @@ function generateTags(){
     const tags = article.getAttribute('data-tags');      
     const splitTagsArray = tags.split(' ');   
     for(let tag of splitTagsArray){    
-      const linkHTML = '<li><a href="#tag-' + tag + '">' + tag + '&nbsp;&nbsp;</a></li>';     
+      const linkHTMLData = {tag: tag};
+      const linkHTML = templates.tagLink(linkHTMLData);     
       html = html + linkHTML;         
       if(!allTags[tag]){   
         allTags[tag]=1;
@@ -80,12 +90,15 @@ function generateTags(){
     const tagsParams = calculateTagsParams(allTags);      
     tagWrapper.innerHTML = html; 
     const tagList = document.querySelector('.tags');
-    let allTagsHTML = '';
-    for(let tag in allTags){    
-        const tagLinkHTML = '<li><a href="#tag-' + tag + '" class ="tag-size-' + calculateTagClass(allTags[tag], tagsParams) + '">' + tag + '</a></li>';     
-        allTagsHTML += tagLinkHTML;
+    const allTagsData = {tags: []};
+    for(let tag in allTags){                 
+        allTagsData.tags.push({
+          tag: tag,
+          count: allTags[tag],
+          className: calculateTagClass(allTags[tag], tagsParams)
+        });
       }
-    tagList.innerHTML = allTagsHTML;
+    tagList.innerHTML = templates.tagCloud(allTagsData);    
   }
 }
 
@@ -137,8 +150,9 @@ function generateAuthors(event){
     const authors = article.getAttribute('data-author');     
     const splitAuthorsArray = authors.split(' ');          
     for(let author of splitAuthorsArray){      
-      const authorLink = '<p><a href="#author-' + author + '">' + author + '</p>';      
-      html = html + authorLink;
+      const linkHTMLData = {author: author};
+      const linkHTML = templates.authorLink(linkHTMLData);
+      html = html + linkHTML;
       if(!allAuthors[author]){
         allAuthors[author]=1;
       } else{
@@ -147,12 +161,13 @@ function generateAuthors(event){
     }         
     authorWrapper.innerHTML = html;
     const authorList = document.querySelector('.authors'); 
-    let allAuthorsHTML = '';
-    for(let author in allAuthors){
-        const authorLinkHTML = '<li><a href="#author-' + author + '">' + author + '</a></li>';     
-        allAuthorsHTML += authorLinkHTML;
+    let allAuthorsData = {authors: []};
+    for(let author in allAuthors){        
+        allAuthorsData.authors.push({
+          author: author
+        });
       }
-      authorList.innerHTML = allAuthorsHTML;
+      authorList.innerHTML = templates.authorCloud(allAuthorsData);
   }
 }
 
